@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import gammaln
 
 
 def normalize(a, axis=None):
@@ -104,3 +105,15 @@ class assert_raises(object):
 
         # propagate the unexpected exception if any.
         return issubclass(exc_type, self.expected)
+
+def log_multivariate_poisson_density(X, means) :
+  # modeled on log_multivariate_normal_density from sklearn.mixture
+  n_samples, n_dim = X.shape
+  # -lambda + k log(lambda) - log(k!)
+  log_means = np.where(means > 0, np.log(means), 0)
+  lpr =  np.dot(X, log_means.T)
+  lpr += -np.sum(means)
+  log_factorial = np.sum(gammaln(X + 1), axis=1)
+  lpr += -log_factorial[:,None]
+  return lpr
+
