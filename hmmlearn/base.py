@@ -538,5 +538,6 @@ class _BaseHMM(BaseEstimator):
         if 't' in params:
             transmat_ = self.transmat_prior - 1.0 + stats['trans']
             normalize(transmat_, axis=1)
-            self.transmat_ = np.where(self.transmat_ <= np.finfo(float).eps,
-                                      self.transmat_, transmat_)
+            self.transmat_ = transmat_
+            # self.transmat_ = np.where(self.transmat_ <= np.finfo(float).eps,
+            #                           self.transmat_, transmat_)
