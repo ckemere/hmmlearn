@@ -110,10 +110,10 @@ def log_multivariate_poisson_density(X, means) :
   # modeled on log_multivariate_normal_density from sklearn.mixture
   n_samples, n_dim = X.shape
   # -lambda + k log(lambda) - log(k!)
-  log_means = np.where(means > 0, np.log(means), 0)
+  log_means = np.where(means > 0, np.log(means), -1e3)
   lpr =  np.dot(X, log_means.T)
-  lpr += -np.sum(means)
+  lpr += -means # means vector is broadcast across the observation dimenension
   log_factorial = np.sum(gammaln(X + 1), axis=1)
-  lpr += -log_factorial[:,None]
+  lpr += -log_factorial[:,None] # logfactobs vector broad cast across the state dimension
   return lpr
 
