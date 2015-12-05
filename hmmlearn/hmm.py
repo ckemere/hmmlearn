@@ -783,5 +783,6 @@ class PoissonHMM(_BaseHMM):
         if 'm' in params:
             self.means_ = ((means_weight * means_prior + stats['obs'])
                            / (means_weight + denom))
+            self.means_ = np.where(self.means_ > 1e-5, self.means_, 1e-3)
 
 

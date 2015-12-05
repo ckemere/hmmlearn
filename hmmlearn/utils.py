@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.special import gammaln
+from scipy.stats import poisson
 
 
 def normalize(a, axis=None):
@@ -107,13 +108,15 @@ class assert_raises(object):
         return issubclass(exc_type, self.expected)
 
 def log_multivariate_poisson_density(X, means) :
-  # modeled on log_multivariate_normal_density from sklearn.mixture
+  # # modeled on log_multivariate_normal_density from sklearn.mixture
   n_samples, n_dim = X.shape
   # -lambda + k log(lambda) - log(k!)
-  log_means = np.where(means > 0, np.log(means), -1e3)
+  log_means = np.where(means > 0, np.log(means), np.log(1e-3))
   lpr =  np.dot(X, log_means.T)
-  lpr += -means # means vector is broadcast across the observation dimenension
+  lpr = lpr - np.sum(means,axis=1) # rates for all elements are summed and then broadcast across the observation dimenension
   log_factorial = np.sum(gammaln(X + 1), axis=1)
-  lpr += -log_factorial[:,None] # logfactobs vector broad cast across the state dimension
+  # lpr = lpr - log_factorial[:,None] # logfactobs vector broad cast across the state dimension
   return lpr
+  # return poisson.logpmf(X, mu = means, loc=0)
+
 
