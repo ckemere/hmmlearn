@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.special import gammaln
-from scipy.stats import poisson
 
 
 def normalize(a, axis=None):
@@ -115,8 +114,7 @@ def log_multivariate_poisson_density(X, means) :
   lpr =  np.dot(X, log_means.T)
   lpr = lpr - np.sum(means,axis=1) # rates for all elements are summed and then broadcast across the observation dimenension
   log_factorial = np.sum(gammaln(X + 1), axis=1)
-  # lpr = lpr - log_factorial[:,None] # logfactobs vector broad cast across the state dimension
+  lpr = lpr - log_factorial[:,None] # logfactobs vector broad cast across the state dimension
   return lpr
-  # return poisson.logpmf(X, mu = means, loc=0)
 
 
